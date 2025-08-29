@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public abstract class MovingController : MonoBehaviour
 {
-    private Rigidbody2D rb2D;
-    public float moveTime = 0.1f;
-
     void Start()
     {
-        rb2D = GetComponent<Rigidbody2D>();
-    }
 
+    }
+    /*
     protected void SmoothMove(Vector3 end)
     {
 
@@ -20,7 +18,7 @@ public abstract class MovingController : MonoBehaviour
         // 残り距離がEpsilon(限りなく0に近い少数)よりも小さくなるまで
         while (goleDistance > float.Epsilon)
         {
-            Vector3 newPosition = Vector3.MoveTowards()
+            Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end,)
         }
     }
     // Start is called before the first frame update
@@ -29,6 +27,12 @@ public abstract class MovingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float sqr
+        
+    }
+    */
+
+    public virtual void MoveTo(Vector3 newPosition)
+    {
+        transform.DOMove(newPosition, 1f).SetEase(Ease.InOutQuart);
     }
 }
