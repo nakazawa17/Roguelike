@@ -5,12 +5,43 @@ using DG.Tweening;
 
 public class PlayerController : MovingController
 {
-    Vector3 newPosition = Vector3.zero;
+    bool isMoving = false;
 
-    public Vector3 MoveRight()
+    public override void MoveToLeft()
     {
-        newPosition.x = 1.0f;
-        return newPosition;
+        base.MoveToLeft();
+        isMoving = true;
+    }
+    public override void MoveToRight()
+    {
+        base.MoveToRight();
+        isMoving = true;
+    }
+    public override void MoveToUp()
+    {
+        base.MoveToUp();
+        isMoving = true;
+    }
+    public override void MoveToDown()
+    {
+        base.MoveToDown();
+        isMoving = true;
+    }
+
+    void Update()
+    {
+        if (isMoving)
+        {
+            MoveJudge(newPosition);
+        }
+
+    }
+
+    protected override void MoveJudge(Vector3 newPosition)
+    {
+        base.MoveJudge(newPosition);
+        newPosition = Vector3.zero;
+        isMoving = false;
     }
 
 }
