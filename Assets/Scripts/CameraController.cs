@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour
         Vector3 cameraPosition = playerPosition.transform.position;
 
         cameraPosition.y = playerPosition.transform.position.y - 1;
-        cameraPosition.z = -10;
+        cameraPosition.z = -30;
         Camera.main.gameObject.transform.position = cameraPosition;
     }
 }

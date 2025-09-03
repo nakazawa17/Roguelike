@@ -9,27 +9,45 @@ public abstract class MovingController : MonoBehaviour
     private Rigidbody2D rb2d;
     private BoxCollider2D bc2d;
 
-    public Vector3 newPosition = Vector3.zero;
-    void Start()
-    {
+    protected bool cannotMove = true;
 
-    }
+    public Vector3 newPosition = Vector3.zero;
 
     public virtual void MoveToRight()
     {
-        newPosition = transform.position + new Vector3(0.5f, 0, 0);
+        newPosition = transform.position + new Vector3(1, 0, 0);
     }
     public virtual void MoveToLeft()
     {
-        newPosition = transform.position + new Vector3(-0.5f, 0, 0);
+        newPosition = transform.position + new Vector3(-1, 0, 0);
     }
     public virtual void MoveToUp()
     {
-        newPosition = transform.position + new Vector3(0, 0.5f, 0);
+        newPosition = transform.position + new Vector3(0, 1, 0);
     }
     public virtual void MoveToDown()
     {
-        newPosition = transform.position + new Vector3(0, -0.5f, 0);
+        newPosition = transform.position + new Vector3(0, -1, 0);
+    }
+    public virtual void MoveToUpperRight()
+    {
+        newPosition = transform.position + new Vector3(1, 1, 0);
+    }
+    public virtual void MoveToUpperLeft()
+    {
+        newPosition = transform.position + new Vector3(-1, 1, 0);
+    }
+    public virtual void MoveToLowerRight()
+    {
+        newPosition = transform.position + new Vector3(1, -1, 0);
+    }
+    public virtual void MoveToLowerLeft()
+    {
+        newPosition = transform.position + new Vector3(-1, -1, 0);
+    }
+    public virtual void Wait()
+    {
+        newPosition = transform.position;
     }
 
 
@@ -45,7 +63,7 @@ public abstract class MovingController : MonoBehaviour
 
         if (hit2D.transform == null)
         {
-            StartCoroutine(MoveToNewPosition(newPosition));
+            cannotMove = false;
         }
 
     }
