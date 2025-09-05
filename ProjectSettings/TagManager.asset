@@ -10,10 +10,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Floor
   - Water
   - UI
-  - Chara
+  - touchable
   - 
   - 
   - 
@@ -42,4 +42,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Floor
+    uniqueID: 1661617689
+    locked: 0
+  - name: Wall
+    uniqueID: 866006605
+    locked: 0
+  - name: Object
+    uniqueID: 2847401405
     locked: 0

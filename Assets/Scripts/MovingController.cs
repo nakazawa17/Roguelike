@@ -35,22 +35,22 @@ public abstract class MovingController : MonoBehaviour
     public virtual void MoveToUpperRight()
     {
         newPosition = transform.position + new Vector3(1, 1, 0);
-        newPosition = newPosition.normalized;
+
     }
     public virtual void MoveToUpperLeft()
     {
         newPosition = transform.position + new Vector3(-1, 1, 0);
-        newPosition = newPosition.normalized;
+
     }
     public virtual void MoveToLowerRight()
     {
         newPosition = transform.position + new Vector3(1, -1, 0);
-        newPosition = newPosition.normalized;
+
     }
     public virtual void MoveToLowerLeft()
     {
         newPosition = transform.position + new Vector3(-1, -1, 0);
-        newPosition = newPosition.normalized;
+
     }
     public virtual void Wait()
     {
@@ -93,6 +93,6 @@ public abstract class MovingController : MonoBehaviour
     public virtual IEnumerator MoveToNewPosition(Vector3 newPosition)
     {
         transform.DOMove(newPosition, 0.5f).SetEase(Ease.InOutQuart);
-        yield return null;
+        yield return new WaitForSeconds(0.5f);
     }
 }

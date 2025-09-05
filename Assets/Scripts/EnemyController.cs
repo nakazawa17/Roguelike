@@ -21,7 +21,7 @@ public class EnemyController : MovingController
     private Vector2 playerPos;
     public PositionRelation relation;
 
-    public IEnumerator EnemyAct()
+    public void EnemyAct()
     {
         player = FindFirstObjectByType<PlayerController>();
         playerPos = player.transform.position;
@@ -90,14 +90,12 @@ public class EnemyController : MovingController
         }
 
         MoveJudge(newPosition);
-        yield return new WaitForSeconds(0.01f);
 
         if (cannotMove)
         {
             newPosition = Vector3.zero;
             AvoidObject();
         }
-        yield return new WaitForSeconds(0.1f);
 
         if (!cannotMove)
         {

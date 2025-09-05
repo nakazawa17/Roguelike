@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public static GameManager gameManager;
     public GameObject[] enemyArray;
     public GameState currentState;
-    public float TurnDelay = 1f;
+    public float TurnDelay = 0.5f;
 
     void Awake()
     {
@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < enemyArray.Length; i++)
         {
             yield return new WaitForSeconds(TurnDelay);
-            enemyArray[i].GetComponent<EnemyController>().StartCoroutine("EnemyAct");
+            enemyArray[i].GetComponent<EnemyController>().EnemyAct();
         }
         SetGameState(GameState.TurnEnd);
     }
