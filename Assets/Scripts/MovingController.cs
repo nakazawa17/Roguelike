@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEditor.Experimental.GraphView;
 
 
 public abstract class MovingController : MonoBehaviour
 {
+
     private Rigidbody2D rb2d;
     private BoxCollider2D bc2d;
+
 
     protected bool cannotMove = true;
 
@@ -48,6 +51,7 @@ public abstract class MovingController : MonoBehaviour
     public virtual void Wait()
     {
         newPosition = transform.position;
+
     }
 
 
@@ -55,16 +59,23 @@ public abstract class MovingController : MonoBehaviour
     {
         Vector3 StartPosition = transform.position;
 
+        int layerObj = LayerMask.GetMask(new string[] { "Chara" });
+
         this.rb2d = GetComponent<Rigidbody2D>();
         this.bc2d = GetComponent<BoxCollider2D>();
+
         bc2d.enabled = false;
-        RaycastHit2D hit2D = Physics2D.Linecast(StartPosition, newPosition);
+        Vector3 dir = newPosition - StartPosition;
+        RaycastHit2D hit2D = Physics2D.Linecast(StartPosition, newPosition, layerObj);
+        Debug.DrawRay(StartPosition, dir, Color.magenta, 3f, false);
+
         bc2d.enabled = true;
 
-        if (hit2D.transform == null)
+        if (hit2D.collider == null)
         {
             cannotMove = false;
         }
+
 
     }
 

@@ -6,56 +6,86 @@ using DG.Tweening;
 public class PlayerController : MovingController
 {
     GameState playerState;
-    GameManager gameManager;
+    public GameManager gameManager;
     bool isMoving = false;
 
     public override void MoveToLeft()
     {
-        base.MoveToLeft();
-        isMoving = true;
+        if (playerState == GameState.PlayerAct)
+        {
+            base.MoveToLeft();
+            isMoving = true;
+        }
     }
     public override void MoveToRight()
     {
-        base.MoveToRight();
-        isMoving = true;
+        if (playerState == GameState.PlayerAct)
+        {
+            base.MoveToRight();
+            isMoving = true;
+        }
     }
     public override void MoveToUp()
     {
-        base.MoveToUp();
-        isMoving = true;
+        if (playerState == GameState.PlayerAct)
+        {
+            base.MoveToUp();
+            isMoving = true;
+        }
     }
     public override void MoveToDown()
     {
-        base.MoveToDown();
-        isMoving = true;
+        if (playerState == GameState.PlayerAct)
+        {
+            base.MoveToDown();
+            isMoving = true;
+        }
     }
     public override void MoveToUpperRight()
     {
-        base.MoveToUpperRight();
-        isMoving = true;
+        if (playerState == GameState.PlayerAct)
+        {
+            base.MoveToUpperRight();
+            isMoving = true;
+        }
     }
     public override void MoveToUpperLeft()
     {
-        base.MoveToUpperLeft();
-        isMoving = true;
+        if (gameManager.currentState == GameState.PlayerAct)
+        {
+            base.MoveToUpperLeft();
+            isMoving = true;
+        }
     }
     public override void MoveToLowerRight()
     {
-        base.MoveToLowerRight();
-        isMoving = true;
+        if (gameManager.currentState == GameState.PlayerAct)
+        {
+            base.MoveToLowerRight();
+            isMoving = true;
+        }
     }
     public override void MoveToLowerLeft()
     {
-        base.MoveToLowerLeft();
-        isMoving = true;
+        if (gameManager.currentState == GameState.PlayerAct)
+        {
+            base.MoveToLowerLeft();
+            isMoving = true;
+        }
     }
     public override void Wait()
     {
-        base.Wait();
-        isMoving = true;
+        if (gameManager.currentState == GameState.PlayerAct)
+        {
+            base.Wait();
+            isMoving = true;
+        }
     }
 
-
+    void Start()
+    {
+        gameManager.GetComponent<GameManager>();
+    }
 
     void Update()
     {
@@ -65,12 +95,13 @@ public class PlayerController : MovingController
             if (!cannotMove)
             {
                 StartCoroutine(MoveToNewPosition(newPosition));
-                newPosition = Vector3.zero;
                 isMoving = false;
                 cannotMove = true;
-                gameManager.GetComponent<GameManager>().SetGameState(GameState.PlayerTurn);
+                gameManager.SetGameState(GameState.PlayerTurn);
             }
+
         }
+
 
 
     }

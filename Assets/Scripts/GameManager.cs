@@ -6,6 +6,7 @@ public enum GameState
 {
     PlayerAct,
     PlayerTurn,
+    MoveWait,
     EnemyTurn,
     TurnEnd
 }
@@ -13,9 +14,9 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
-    // public GameObject[] EnemyList;
+    public GameObject[] enemyArray;
     public GameState currentState;
-    public float TurnDelay = 0.5f;
+    public float TurnDelay = 1f;
 
     void Awake()
     {
@@ -48,6 +49,9 @@ public class GameManager : MonoBehaviour
             case GameState.PlayerTurn:
                 StartCoroutine("PlayerTurn");
                 break;
+            case GameState.MoveWait:
+                SetGameState(GameState.EnemyTurn);
+                break;
 
             case GameState.EnemyTurn:
                 StartCoroutine("EnemyTurn");
@@ -62,12 +66,19 @@ public class GameManager : MonoBehaviour
     IEnumerator PlayerTurn()
     {
         yield return new WaitForSeconds(TurnDelay);
-        SetGameState(GameState.EnemyTurn);
+        SetGameState(GameState.MoveWait);
     }
 
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(TurnDelay);
+        enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
+
+        for (int i = 0; i < enemyArray.Length; i++)
+        {
+            yield return new WaitForSeconds(TurnDelay);
+            enemyArray[i].GetComponent<EnemyController>().StartCoroutine("EnemyAct");
+        }
         SetGameState(GameState.TurnEnd);
     }
 }

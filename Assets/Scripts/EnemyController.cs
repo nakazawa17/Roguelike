@@ -5,14 +5,14 @@ using UnityEngine;
 
 public enum PositionRelation
 {
-    Right,
-    Left,
-    Up,
-    Down,
-    UpperRight,
-    UpperLeft,
-    LowerRight,
-    LowerLeft
+    RIGHT,
+    LEFT,
+    UP,
+    DOWN,
+    UPPER_RIGHT,
+    UPPER_LEFT,
+    LOWER_RIGHT,
+    LOWER_LEFT
 }
 
 public class EnemyController : MovingController
@@ -21,7 +21,7 @@ public class EnemyController : MovingController
     private Vector2 playerPos;
     public PositionRelation relation;
 
-    public void EnemyAct()
+    public IEnumerator EnemyAct()
     {
         player = FindFirstObjectByType<PlayerController>();
         playerPos = player.transform.position;
@@ -34,62 +34,261 @@ public class EnemyController : MovingController
         // if (AbsXdir > 5 || AbsYdir > 5){}
         if (AbsXdir > AbsYdir)
         {
-            if (Xdir < 0)
+
+            if (Xdir > 0)
             {
-                MoveToLowerRight();
-                relation = PositionRelation.Right;
+                MoveToRight();
+                relation = PositionRelation.RIGHT;
             }
-            else if (Xdir > 0)
+            else
             {
                 MoveToLeft();
-                relation = PositionRelation.Left;
+                relation = PositionRelation.LEFT;
             }
         }
         else if (AbsXdir < AbsYdir)
         {
-            if (Ydir < 0)
+            if (Ydir > 0)
             {
                 MoveToUp();
-                relation = PositionRelation.Up;
+                relation = PositionRelation.UP;
+
             }
             else
             {
                 MoveToDown();
-                relation = PositionRelation.Down;
+                relation = PositionRelation.DOWN;
+
             }
         }
         else if (AbsXdir == AbsYdir)
         {
-            if (Xdir < 0 && Ydir < 0)
+            if (Xdir > 0 && Ydir > 0)
             {
                 MoveToUpperRight();
-                relation = PositionRelation.UpperRight;
-            }
-            else if (Xdir > 0 && Ydir < 0)
-            {
-                MoveToUpperLeft();
-                relation = PositionRelation.UpperLeft;
+                relation = PositionRelation.UPPER_RIGHT;
+
             }
             else if (Xdir < 0 && Ydir > 0)
             {
-                MoveToLowerRight();
-                relation = PositionRelation.LowerRight;
+                MoveToUpperLeft();
+                relation = PositionRelation.UPPER_LEFT;
+
             }
             else if (Xdir > 0 && Ydir < 0)
             {
+                MoveToLowerRight();
+                relation = PositionRelation.LOWER_RIGHT;
+
+            }
+            else if (Xdir < 0 && Ydir < 0)
+            {
                 MoveToLowerLeft();
-                relation = PositionRelation.LowerLeft;
+                relation = PositionRelation.LOWER_LEFT;
+
             }
         }
-        MoveJudge(this.newPosition);
+
+        MoveJudge(newPosition);
+        yield return new WaitForSeconds(0.01f);
+
         if (cannotMove)
+        {
+            newPosition = Vector3.zero;
+            AvoidObject();
+        }
+        yield return new WaitForSeconds(0.1f);
+
+        if (!cannotMove)
         {
             StartCoroutine(MoveToNewPosition(newPosition));
         }
+        newPosition = Vector3.zero;
+        cannotMove = true;
     }
-    // Update is called once per frame
-    void Update()
+    private void AvoidObject()
     {
+        switch (relation)
+        {
+            case PositionRelation.RIGHT:
+                if (cannotMove)
+                {
+                    MoveToUpperRight();
+                    MoveJudge(newPosition);
 
+                }
+                if (cannotMove)
+                {
+                    MoveToLowerRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToUp();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToDown();
+                    MoveJudge(newPosition);
+
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.LEFT:
+                if (cannotMove)
+                {
+                    MoveToLowerLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToLowerLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToUp();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToDown();
+                    MoveJudge(newPosition);
+                }
+                else
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.UP:
+                if (cannotMove)
+                {
+                    MoveToUpperLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToLowerRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.DOWN:
+                if (cannotMove)
+                {
+                    MoveToLowerLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToLowerRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.UPPER_RIGHT:
+                if (cannotMove)
+                {
+                    MoveToLowerRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToUp();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.UPPER_LEFT:
+                if (cannotMove)
+                {
+                    MoveToLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToUp();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.LOWER_RIGHT:
+                if (cannotMove)
+                {
+                    MoveToRight();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToDown();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+            case PositionRelation.LOWER_LEFT:
+                if (cannotMove)
+                {
+                    MoveToLeft();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    MoveToDown();
+                    MoveJudge(newPosition);
+                }
+                if (cannotMove)
+                {
+                    Wait();
+                    MoveJudge(newPosition);
+                }
+                break;
+        }
     }
+
 }
