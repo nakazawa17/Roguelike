@@ -35,18 +35,22 @@ public abstract class MovingController : MonoBehaviour
     public virtual void MoveToUpperRight()
     {
         newPosition = transform.position + new Vector3(1, 1, 0);
+        newPosition = newPosition.normalized;
     }
     public virtual void MoveToUpperLeft()
     {
         newPosition = transform.position + new Vector3(-1, 1, 0);
+        newPosition = newPosition.normalized;
     }
     public virtual void MoveToLowerRight()
     {
         newPosition = transform.position + new Vector3(1, -1, 0);
+        newPosition = newPosition.normalized;
     }
     public virtual void MoveToLowerLeft()
     {
         newPosition = transform.position + new Vector3(-1, -1, 0);
+        newPosition = newPosition.normalized;
     }
     public virtual void Wait()
     {
@@ -59,7 +63,7 @@ public abstract class MovingController : MonoBehaviour
     {
         Vector3 StartPosition = transform.position;
 
-        int layerObj = LayerMask.GetMask(new string[] { "Chara" });
+        int layerObj = LayerMask.GetMask(new string[] { "touchable" });
 
         this.rb2d = GetComponent<Rigidbody2D>();
         this.bc2d = GetComponent<BoxCollider2D>();
