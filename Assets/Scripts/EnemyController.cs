@@ -15,12 +15,12 @@ public enum PositionRelation
     LOWER_LEFT
 }
 
+
 public class EnemyController : MovingController
 {
     private PlayerController player;
     private Vector2 playerPos;
     public PositionRelation relation;
-
     public void EnemyAct()
     {
         player = FindFirstObjectByType<PlayerController>();
@@ -90,21 +90,18 @@ public class EnemyController : MovingController
         }
 
         MoveJudge(newPosition);
-
         if (cannotMove)
         {
-            newPosition = Vector3.zero;
-            AvoidObject();
+            AvoidObject(Xdir, Ydir);
         }
 
         if (!cannotMove)
         {
             StartCoroutine(MoveToNewPosition(newPosition));
         }
-        newPosition = Vector3.zero;
         cannotMove = true;
     }
-    private void AvoidObject()
+    private void AvoidObject(int Xdir, int Ydir)
     {
         switch (relation)
         {
@@ -140,8 +137,9 @@ public class EnemyController : MovingController
             case PositionRelation.LEFT:
                 if (cannotMove)
                 {
-                    MoveToLowerLeft();
+                    MoveToUpperLeft();
                     MoveJudge(newPosition);
+
                 }
                 if (cannotMove)
                 {
@@ -158,7 +156,7 @@ public class EnemyController : MovingController
                     MoveToDown();
                     MoveJudge(newPosition);
                 }
-                else
+                if (cannotMove)
                 {
                     Wait();
                     MoveJudge(newPosition);
@@ -167,14 +165,16 @@ public class EnemyController : MovingController
             case PositionRelation.UP:
                 if (cannotMove)
                 {
+                    MoveToUpperRight();
+                    MoveJudge(newPosition);
+                }
+
+                if (cannotMove)
+                {
                     MoveToUpperLeft();
                     MoveJudge(newPosition);
                 }
-                if (cannotMove)
-                {
-                    MoveToLowerRight();
-                    MoveJudge(newPosition);
-                }
+
                 if (cannotMove)
                 {
                     MoveToRight();
@@ -194,12 +194,19 @@ public class EnemyController : MovingController
             case PositionRelation.DOWN:
                 if (cannotMove)
                 {
+                    MoveToLowerRight();
+                    MoveJudge(newPosition);
+                }
+
+                if (cannotMove)
+                {
                     MoveToLowerLeft();
                     MoveJudge(newPosition);
                 }
+
                 if (cannotMove)
                 {
-                    MoveToLowerRight();
+                    MoveToRight();
                     MoveJudge(newPosition);
                 }
                 if (cannotMove)
@@ -207,11 +214,7 @@ public class EnemyController : MovingController
                     MoveToLeft();
                     MoveJudge(newPosition);
                 }
-                if (cannotMove)
-                {
-                    MoveToRight();
-                    MoveJudge(newPosition);
-                }
+
                 if (cannotMove)
                 {
                     Wait();
@@ -221,7 +224,7 @@ public class EnemyController : MovingController
             case PositionRelation.UPPER_RIGHT:
                 if (cannotMove)
                 {
-                    MoveToLowerRight();
+                    MoveToRight();
                     MoveJudge(newPosition);
                 }
                 if (cannotMove)
@@ -288,5 +291,4 @@ public class EnemyController : MovingController
                 break;
         }
     }
-
 }

@@ -2,83 +2,93 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class PlayerController : MovingController
 {
-    GameState playerState;
+    GameState playerTurn;
     public GameManager gameManager;
-    bool isMoving = false;
+    private bool canAct = true;
+
+    public bool CanAct
+    {
+        get { return this.canAct; }
+        set { canAct = value; }
+    }
+
+    bool onStairs = false;
 
     public override void MoveToLeft()
     {
-        if (playerState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToLeft();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToRight()
     {
-        if (playerState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToRight();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToUp()
     {
-        if (playerState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToUp();
-            isMoving = true;
+            Debug.Log(gameManager.currentState);
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToDown()
     {
-        if (playerState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToDown();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToUpperRight()
     {
-        if (playerState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToUpperRight();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToUpperLeft()
     {
-        if (gameManager.currentState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToUpperLeft();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToLowerRight()
     {
-        if (gameManager.currentState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToLowerRight();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void MoveToLowerLeft()
     {
-        if (gameManager.currentState == GameState.PlayerAct)
+        if (canAct)
         {
             base.MoveToLowerLeft();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
     public override void Wait()
     {
-        if (gameManager.currentState == GameState.PlayerAct)
+        if (canAct)
         {
             base.Wait();
-            isMoving = true;
+            gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
 
@@ -87,31 +97,25 @@ public class PlayerController : MovingController
         gameManager.GetComponent<GameManager>();
     }
 
-    void Update()
+    public void PlayerAct()
     {
-        if (isMoving)
+        MoveJudge(newPosition);
+        if (!cannotMove)
         {
-            MoveJudge(newPosition);
-            if (!cannotMove)
-            {
-                StartCoroutine(MoveToNewPosition(newPosition));
-                isMoving = false;
-                cannotMove = true;
-                gameManager.SetGameState(GameState.PlayerTurn);
-            }
-
+            StartCoroutine(MoveToNewPosition(newPosition));
+            newPosition = Vector3.zero;
+            cannotMove = true;
+            gameManager.SetGameState(GameState.PlayerAction);
         }
-
-
-
+        gameManager.SetGameState(GameState.PlayerWait);
     }
 
     protected override void MoveJudge(Vector3 newPosition)
     {
         gameManager = FindFirstObjectByType<GameManager>();
-        playerState = gameManager.GetComponent<GameManager>().currentState;
+        playerTurn = gameManager.GetComponent<GameManager>().currentState;
 
-        if (playerState == GameState.PlayerAct)
+        if (playerTurn == GameState.PlayerTurn)
         {
             base.MoveJudge(newPosition);
         }

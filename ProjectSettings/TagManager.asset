@@ -49,6 +49,12 @@ TagManager:
   - name: Wall
     uniqueID: 866006605
     locked: 0
+  - name: Corner
+    uniqueID: 2102890487
+    locked: 0
+  - name: Stairs
+    uniqueID: 696232127
+    locked: 0
   - name: Object
     uniqueID: 2847401405
     locked: 0

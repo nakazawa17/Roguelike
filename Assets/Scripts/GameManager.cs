@@ -1,22 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum GameState
 {
-    PlayerAct,
+    PlayerWait,
     PlayerTurn,
-    MoveWait,
+    PlayerAction,
     EnemyTurn,
+    EnemyAction,
     TurnEnd
 }
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    public PlayerController player;
     public GameObject[] enemyArray;
     public GameState currentState;
+
     public float TurnDelay = 0.5f;
+    public float EnemyDelay = 1f;
+
+
 
     void Awake()
     {
@@ -43,22 +50,30 @@ public class GameManager : MonoBehaviour
     {
         switch (state)
         {
-            case GameState.PlayerAct:
+            case GameState.PlayerWait:
+                Debug.Log(currentState);
                 break;
 
             case GameState.PlayerTurn:
+                player.CanAct = false;
                 StartCoroutine("PlayerTurn");
                 break;
-            case GameState.MoveWait:
+
+            case GameState.PlayerAction:
                 SetGameState(GameState.EnemyTurn);
                 break;
 
             case GameState.EnemyTurn:
+                SetGameState(GameState.EnemyAction);
+                break;
+
+            case GameState.EnemyAction:
                 StartCoroutine("EnemyTurn");
                 break;
 
             case GameState.TurnEnd:
-                SetGameState(GameState.PlayerAct);
+                SetGameState(GameState.PlayerWait);
+                player.CanAct = true;
                 break;
         }
     }
@@ -66,7 +81,7 @@ public class GameManager : MonoBehaviour
     IEnumerator PlayerTurn()
     {
         yield return new WaitForSeconds(TurnDelay);
-        SetGameState(GameState.MoveWait);
+        player.PlayerAct();
     }
 
     IEnumerator EnemyTurn()
@@ -76,8 +91,16 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < enemyArray.Length; i++)
         {
-            yield return new WaitForSeconds(TurnDelay);
+            if (enemyArray[0])
+            {
+                yield return new WaitForSeconds(TurnDelay);
+            }
+            else
+            {
+                yield return new WaitForSeconds(EnemyDelay);
+            }
             enemyArray[i].GetComponent<EnemyController>().EnemyAct();
+
         }
         SetGameState(GameState.TurnEnd);
     }

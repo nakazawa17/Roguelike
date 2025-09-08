@@ -14,7 +14,7 @@ public abstract class MovingController : MonoBehaviour
 
     protected bool cannotMove = true;
 
-    public Vector3 newPosition = Vector3.zero;
+    public Vector3 newPosition = new Vector3(0.5f, 0.5f, 0);
 
     public virtual void MoveToRight()
     {
