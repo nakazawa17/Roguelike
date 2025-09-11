@@ -16,7 +16,7 @@ public class PlayerController : MovingController
         set { canAct = value; }
     }
 
-    bool onStairs = false;
+    //bool onStairs = false;
 
     public override void MoveToLeft()
     {
@@ -39,7 +39,7 @@ public class PlayerController : MovingController
         if (canAct)
         {
             base.MoveToUp();
-            Debug.Log(gameManager.currentState);
+
             gameManager.SetGameState(GameState.PlayerTurn);
         }
     }
@@ -108,6 +108,7 @@ public class PlayerController : MovingController
             gameManager.SetGameState(GameState.PlayerAction);
         }
         gameManager.SetGameState(GameState.PlayerWait);
+        canAct = true;
     }
 
     protected override void MoveJudge(Vector3 newPosition)

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+
 public enum GameState
 {
+    MapUpdata,
     PlayerWait,
     PlayerTurn,
     PlayerAction,
@@ -16,12 +18,16 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    public MapController mapController;
     public PlayerController player;
     public GameObject[] enemyArray;
     public GameState currentState;
 
+    public bool onStairs;
+
     public float TurnDelay = 0.5f;
     public float EnemyDelay = 1f;
+
 
 
 
@@ -43,15 +49,16 @@ public class GameManager : MonoBehaviour
     {
         currentState = state;
         GameStateChange(currentState);
-
     }
 
     void GameStateChange(GameState state)
     {
         switch (state)
         {
+            case GameState.MapUpdata:
+
+                break;
             case GameState.PlayerWait:
-                Debug.Log(currentState);
                 break;
 
             case GameState.PlayerTurn:
@@ -72,8 +79,15 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.TurnEnd:
-                SetGameState(GameState.PlayerWait);
-                player.CanAct = true;
+                if (onStairs)
+                {
+                    SetGameState(GameState.MapUpdata);
+                }
+                else
+                {
+                    SetGameState(GameState.PlayerWait);
+                    player.CanAct = true;
+                }
                 break;
         }
     }
@@ -103,5 +117,15 @@ public class GameManager : MonoBehaviour
 
         }
         SetGameState(GameState.TurnEnd);
+    }
+
+    IEnumerator MapUpdata()
+    {
+        onStairs = false;
+        mapController.placeObject();
+
+        yield return null;
+        SetGameState(GameState.PlayerWait);
+        player.CanAct = true;
     }
 }
