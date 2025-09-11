@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - Object
   - Room
+  - Stage
   layers:
   - Default
   - TransparentFX

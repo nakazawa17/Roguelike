@@ -9,36 +9,47 @@ using UnityEngine.Tilemaps;
 
 public class MapController : MonoBehaviour
 {
-    public PlayerController player;
-    public StairsController stairs;
+    [SerializeField] PlayerController player;
+    [SerializeField] StairsController stairs;
+    [SerializeField] GameManager gameManager;
+    [SerializeField] UIManager uIManager;
+    [SerializeField] EnemySpawnController enemySpawn;
 
-    public GameObject[] roomTilemaps;
+
+    [SerializeField] GameObject[] stages;
+    [SerializeField] GameObject[] roomTilemaps;
+
     private System.Random r = new System.Random();
     public List<Vector3> tileLocations;
-    public int stageCount;
 
-    void Awake()
-    {
-        roomTilemaps = GameObject.FindGameObjectsWithTag("Room");
-    }
+    GameObject currentStage;
 
     public class Count
     {
         public int minEnemy;
         public int maxEnemy;
     }
-
-    public void placeObject()
+    public void MapChange()
     {
-        Vector3 playerPlace = assign();
-        player.transform.position = playerPlace;
+        currentStage = GameObject.FindWithTag("Stage");
+        currentStage.SetActive(false);
+        int randomValue = r.Next(stages.Length);
+        currentStage = stages[randomValue];
+        currentStage.SetActive(true);
+        roomTilemaps = GameObject.FindGameObjectsWithTag("Room");
+        PlaceObject();
+    }
 
-        Vector3 stairsPlace = assign();
+    private void PlaceObject()
+    {
+        Vector3 playerPlace = Assign();
+        player.transform.position = playerPlace;
+        Vector3 stairsPlace = Assign();
         stairs.transform.position = stairsPlace;
 
     }
 
-    public Vector3 assign()
+    private Vector3 Assign()
     {
         int randomValue = r.Next(roomTilemaps.Length);
         Tilemap assignedRoom = roomTilemaps[randomValue].GetComponent<Tilemap>();
@@ -56,6 +67,29 @@ public class MapController : MonoBehaviour
         int randomNum = r.Next(tileLocations.Count);
         Vector3 assignedLocation = tileLocations[randomNum] + new Vector3(0.5f, 0.5f, 0);
         return assignedLocation;
+    }
 
+    public Vector3 Assign(GameObject enemy)
+    {
+        Vector3 assignedLocation = Vector3.zero;
+        bool canAssign = false;
+
+        while (!canAssign)
+        {
+            assignedLocation = Assign();
+            Vector3 playerPos = GameObject.FindWithTag("Player").transform.position;
+            if (assignedLocation != playerPos)
+            {
+                canAssign = true;
+            }
+            /*
+            for (int i = 0; i < gameManager.enemyArray.Length; i++)
+            {
+
+            }
+            */
+
+        }
+        return assignedLocation;
     }
 }

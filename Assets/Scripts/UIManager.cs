@@ -6,21 +6,14 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    private TextMeshProUGUI stageNumber;
-    public float feedSpeed = 0.03f;
-    float red, green, blue;
+    [SerializeField] GameObject panel;
+    [SerializeField] TextMeshProUGUI stageNumber;
+    [SerializeField] Animator animator;
 
-    void Awake()
+    public void BlackOut(int stageCount)
     {
-        stageNumber = GetComponent<TextMeshProUGUI>();
-        red = GetComponent<Image>().color.r;
-        green = GetComponent<Image>().color.g;
-        blue = GetComponent<Image>().color.b;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        panel.SetActive(true);
+        animator.SetTrigger("MapUpdata");
+        stageNumber.text = "B" + stageCount;
     }
 }

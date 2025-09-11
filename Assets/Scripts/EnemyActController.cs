@@ -16,7 +16,7 @@ public enum PositionRelation
 }
 
 
-public class EnemyController : MovingController
+public class EnemyActController : MovingController
 {
     private PlayerController player;
     private Vector2 playerPos;
