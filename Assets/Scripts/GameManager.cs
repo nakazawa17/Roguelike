@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,15 +23,19 @@ public class GameManager : MonoBehaviour
     public MapController mapController;
     public PlayerController player;
     public UIManager uIManager;
+    public EnemiesManager enemiseManager;
 
-    public GameObject[] enemyArray;
+
     public GameState currentState;
     public int stageCount;
 
+
+    public int turnCount;
     public bool onStairs;
 
-    public float TurnDelay = 0.5f;
-    public float EnemyDelay = 1f;
+
+    [SerializeField] float TurnDelay = 0.3f;
+    [SerializeField] float EnemyDelay = 0.2f;
 
 
 
@@ -46,8 +52,12 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-    }
 
+    }
+    void Start()
+    {
+        SetGameState(GameState.MapUpdata);
+    }
     public void SetGameState(GameState state)
     {
         currentState = state;
@@ -59,8 +69,9 @@ public class GameManager : MonoBehaviour
         switch (state)
         {
             case GameState.MapUpdata:
-                StartCoroutine("MapUpdata");
+                StartCoroutine("CreateMap");
                 break;
+
             case GameState.PlayerWait:
                 break;
 
@@ -88,8 +99,15 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("TurnEnd");
                     SetGameState(GameState.PlayerWait);
                     player.CanAct = true;
+                    turnCount++;
+                    bool isSpawn = enemiseManager.SpawanTimeEvent(turnCount);
+                    if (isSpawn)
+                    {
+                        turnCount = 0;
+                    }
                 }
                 break;
         }
@@ -104,11 +122,11 @@ public class GameManager : MonoBehaviour
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(TurnDelay);
-        enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
+        int listSize = enemiseManager.enemyList.Count;
 
-        for (int i = 0; i < enemyArray.Length; i++)
+        for (int i = 0; i < listSize; i++)
         {
-            if (enemyArray[0])
+            if (i == 0)
             {
                 yield return new WaitForSeconds(TurnDelay);
             }
@@ -116,25 +134,43 @@ public class GameManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(EnemyDelay);
             }
-            enemyArray[i].GetComponent<EnemyActController>().EnemyAct();
+            EnemyActController enemy = enemiseManager.enemyList[i].GetComponent<EnemyActController>();
+            enemy.StartCoroutine("EnemyAct");
+
+            if (i == (listSize - 1))
+            {
+                yield return new WaitUntil(enemy.getIsMoved);
+                Debug.Log("i : " + i);
+                SetGameState(GameState.TurnEnd);
+            }
 
         }
-        SetGameState(GameState.TurnEnd);
+
     }
 
-    IEnumerator MapUpdata()
+    IEnumerator CreateMap()
     {
         uIManager.BlackOut(stageCount);
         stageCount++;
         onStairs = false;
 
-        foreach (GameObject enemy in enemyArray)
+        // 初回起動時は処理しない
+        if (enemiseManager.enemyList != null)
         {
-            Destroy(enemy);
+            foreach (GameObject enemy in enemiseManager.enemyList)
+            {
+                Destroy(enemy);
+            }
         }
 
         yield return new WaitForSeconds(1.5f);
         mapController.MapChange();
+
+        enemiseManager.enemyList.Clear();
+        for (int i = 0; i < enemiseManager.initialEnemyCount; i++)
+        {
+            enemiseManager.SpawnEnemy();
+        }
 
         yield return new WaitForSeconds(1.0f);
         SetGameState(GameState.PlayerWait);

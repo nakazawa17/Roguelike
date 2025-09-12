@@ -13,7 +13,7 @@ public class MapController : MonoBehaviour
     [SerializeField] StairsController stairs;
     [SerializeField] GameManager gameManager;
     [SerializeField] UIManager uIManager;
-    [SerializeField] EnemySpawnController enemySpawn;
+    [SerializeField] EnemiesManager enemiesManager;
 
 
     [SerializeField] GameObject[] stages;
@@ -52,6 +52,7 @@ public class MapController : MonoBehaviour
     private Vector3 Assign()
     {
         int randomValue = r.Next(roomTilemaps.Length);
+        // Debug.Log(roomTilemaps.Length + " : " + randomValue);
         Tilemap assignedRoom = roomTilemaps[randomValue].GetComponent<Tilemap>();
         tileLocations = new List<Vector3>();
 
@@ -69,7 +70,7 @@ public class MapController : MonoBehaviour
         return assignedLocation;
     }
 
-    public Vector3 Assign(GameObject enemy)
+    public void AssignEnemy(GameObject enemy)
     {
         Vector3 assignedLocation = Vector3.zero;
         bool canAssign = false;
@@ -82,14 +83,18 @@ public class MapController : MonoBehaviour
             {
                 canAssign = true;
             }
-            /*
-            for (int i = 0; i < gameManager.enemyArray.Length; i++)
+
+            for (int i = 0; i < enemiesManager.enemyList.Count; i++)
             {
-
+                Vector3 existingEnemyPos = enemiesManager.enemyList[i].transform.position;
+                if (assignedLocation == existingEnemyPos)
+                {
+                    canAssign = false;
+                    break;
+                }
             }
-            */
-
         }
-        return assignedLocation;
+
+        enemy.transform.position = assignedLocation;
     }
 }

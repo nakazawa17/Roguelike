@@ -21,8 +21,12 @@ public class EnemyActController : MovingController
     private PlayerController player;
     private Vector2 playerPos;
     public PositionRelation relation;
-    public void EnemyAct()
+
+    public bool isMoved;
+
+    public IEnumerator EnemyAct()
     {
+        isMoved = false;
         player = FindFirstObjectByType<PlayerController>();
         playerPos = player.transform.position;
         int Xdir = (int)playerPos.x - (int)this.transform.position.x;
@@ -99,9 +103,16 @@ public class EnemyActController : MovingController
         {
             StartCoroutine(MoveToNewPosition(newPosition));
         }
+
+        yield return new WaitForSeconds(0.5f);
+        isMoved = true;
         cannotMove = true;
     }
-    private void AvoidObject(int Xdir, int Ydir)
+    public bool getIsMoved()
+    {
+        return isMoved;
+    }
+    void AvoidObject(int Xdir, int Ydir)
     {
         switch (relation)
         {

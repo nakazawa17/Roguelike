@@ -92,7 +92,7 @@ public abstract class MovingController : MonoBehaviour
 
     public virtual IEnumerator MoveToNewPosition(Vector3 newPosition)
     {
-        transform.DOMove(newPosition, 0.5f).SetEase(Ease.InOutQuart);
-        yield return new WaitForSeconds(0.5f);
+        transform.DOMove(newPosition, 0.3f).SetEase(Ease.InOutQuart);
+        yield return new WaitForSeconds(0.3f);
     }
 }

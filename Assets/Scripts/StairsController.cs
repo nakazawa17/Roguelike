@@ -11,8 +11,8 @@ public class StairsController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Hit");
             gameManager.onStairs = true;
+            Debug.Log("Hit!");
         }
 
     }
