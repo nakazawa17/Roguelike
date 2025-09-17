@@ -82,12 +82,15 @@ public class MapController : MonoBehaviour
             {
                 canAssign = true;
             }
-            /*
-            for (int i = 0; i < gameManager.enemyArray.Length; i++)
-            {
 
+            int enemyCount = enemyManager.enemyList.Count;
+            for (int i = 0; i < enemyCount; i++)
+            {
+                if (enemyManager.enemyList[i].transform.position == assignedLocation)
+                {
+                    canAssign = true;
+                }
             }
-            */
 
         }
         enemy.transform.position = assignedLocation;

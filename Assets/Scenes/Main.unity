@@ -8492,7 +8492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &565151677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8506,7 +8506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.14117648}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9076,13 +9076,15 @@ MonoBehaviour:
   player: {fileID: 1193752738}
   uIManager: {fileID: 409520104}
   enemyManager: {fileID: 171982212}
+  cover: {fileID: 565151676}
   currentState: 0
   stageCount: 1
-  TurnDelay: 0.1
-  EnemyDelay: 0.3
+  TurnDelay: 0.2
+  EnemyDelay: 0.2
   initialEnemyCount: 3
   stairs: {fileID: 1994258148}
-  cover: {fileID: 565151676}
+  aboutSpawnTurn: 5
+  deviationSpawnTurn: 3
 --- !u!4 &585164745
 Transform:
   m_ObjectHideFlags: 0
@@ -32211,9 +32213,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1193752738}
   stairs: {fileID: 1994258148}
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 585164744}
   uIManager: {fileID: 409520104}
-  enemyManager: {fileID: 0}
+  enemyManager: {fileID: 171982212}
   stages:
   - {fileID: 686156567}
   - {fileID: 1087401080}

@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public PlayerController player;
     public UIManager uIManager;
     public EnemyManager enemyManager;
-
+    public GameObject cover;
 
     public GameState currentState;
     public int stageCount;
@@ -33,11 +33,11 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] int initialEnemyCount;
     [SerializeField] StairsController stairs;
-    [SerializeField] GameObject cover;
+    [SerializeField] int aboutSpawnTurn;
+    [SerializeField] int deviationSpawnTurn;
 
-
-
-
+    private System.Random r = new System.Random();
+    private int turnCount;
 
     void Awake()
     {
@@ -70,12 +70,10 @@ public class GameManager : MonoBehaviour
                 StartCoroutine("MapUpdata");
                 break;
             case GameState.PlayerWait:
-
                 break;
 
             case GameState.PlayerTurn:
                 cover.SetActive(true);
-                player.CanAct = false;
                 StartCoroutine("PlayerTurn");
                 break;
 
@@ -99,7 +97,16 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     SetGameState(GameState.PlayerWait);
-                    player.CanAct = true;
+                    if (turnCount >= aboutSpawnTurn)
+                    {
+                        int randomDeviation = r.Next(deviationSpawnTurn);
+                        if (turnCount < aboutSpawnTurn + randomDeviation)
+                        {
+                            enemyManager.SpawnEnemy();
+                            turnCount = 0;
+                        }
+                    }
+                    turnCount++;
                     cover.SetActive(false);
                 }
                 break;
@@ -141,6 +148,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator MapUpdata()
     {
+        turnCount = 0;
         uIManager.BlackOut(stageCount);
         stageCount++;
 
@@ -162,6 +170,6 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
         SetGameState(GameState.PlayerWait);
-        player.CanAct = true;
+        cover.SetActive(false);
     }
 }
