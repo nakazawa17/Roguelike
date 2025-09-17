@@ -78,6 +78,7 @@ public class PlayerController : MovingController
             gameManager.SetGameState(GameState.PlayerAction);
         }
         gameManager.SetGameState(GameState.PlayerWait);
+        gameManager.cover.SetActive(false);
     }
 
     protected override void MoveJudge(Vector3 newPosition)
