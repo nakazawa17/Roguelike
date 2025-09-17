@@ -10,13 +10,12 @@ public class PlayerController : MovingController
     public GameManager gameManager;
     private bool canAct = true;
 
+
     public bool CanAct
     {
         get { return this.canAct; }
         set { canAct = value; }
     }
-
-    //bool onStairs = false;
 
     public override void MoveToLeft()
     {

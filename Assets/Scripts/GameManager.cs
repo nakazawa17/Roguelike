@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,15 +22,19 @@ public class GameManager : MonoBehaviour
     public MapController mapController;
     public PlayerController player;
     public UIManager uIManager;
+    public EnemyManager enemyManager;
 
-    public GameObject[] enemyArray;
+
     public GameState currentState;
     public int stageCount;
 
-    public bool onStairs;
-
     public float TurnDelay = 0.5f;
     public float EnemyDelay = 1f;
+
+    [SerializeField] int initialEnemyCount;
+    [SerializeField] StairsController stairs;
+    [SerializeField] GameObject cover;
+
 
 
 
@@ -47,7 +52,10 @@ public class GameManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
     }
-
+    void Start()
+    {
+        StartCoroutine("MapUpdata");
+    }
     public void SetGameState(GameState state)
     {
         currentState = state;
@@ -62,9 +70,11 @@ public class GameManager : MonoBehaviour
                 StartCoroutine("MapUpdata");
                 break;
             case GameState.PlayerWait:
+
                 break;
 
             case GameState.PlayerTurn:
+                cover.SetActive(true);
                 player.CanAct = false;
                 StartCoroutine("PlayerTurn");
                 break;
@@ -82,7 +92,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.TurnEnd:
-                if (onStairs)
+                if (player.transform.position == stairs.transform.position)
                 {
                     SetGameState(GameState.MapUpdata);
                 }
@@ -90,6 +100,7 @@ public class GameManager : MonoBehaviour
                 {
                     SetGameState(GameState.PlayerWait);
                     player.CanAct = true;
+                    cover.SetActive(false);
                 }
                 break;
         }
@@ -104,11 +115,10 @@ public class GameManager : MonoBehaviour
     IEnumerator EnemyTurn()
     {
         yield return new WaitForSeconds(TurnDelay);
-        enemyArray = GameObject.FindGameObjectsWithTag("Enemy");
-
-        for (int i = 0; i < enemyArray.Length; i++)
+        int enemyCount = enemyManager.enemyList.Count;
+        for (int i = 0; i < enemyCount; i++)
         {
-            if (enemyArray[0])
+            if (enemyManager.enemyList[0])
             {
                 yield return new WaitForSeconds(TurnDelay);
             }
@@ -116,25 +126,39 @@ public class GameManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(EnemyDelay);
             }
-            enemyArray[i].GetComponent<EnemyActController>().EnemyAct();
+            enemyManager.enemyList[i].GetComponent<EnemyActController>().StartCoroutine("EnemyAct");
 
+            if (i == enemyCount - 1)
+            {
+                EnemyActController lastEnemy = enemyManager.enemyList[i - 1].GetComponent<EnemyActController>();
+                yield return new WaitUntil(lastEnemy.IsItMoved);
+                SetGameState(GameState.TurnEnd);
+
+            }
         }
-        SetGameState(GameState.TurnEnd);
+
     }
 
     IEnumerator MapUpdata()
     {
         uIManager.BlackOut(stageCount);
         stageCount++;
-        onStairs = false;
 
-        foreach (GameObject enemy in enemyArray)
+        if (enemyManager.enemyList.Count > 0)
         {
-            Destroy(enemy);
+            for (int i = 0; i < initialEnemyCount; i++)
+            {
+                Destroy(enemyManager.enemyList[i]);
+            }
+            enemyManager.enemyList.Clear();
         }
-
         yield return new WaitForSeconds(1.5f);
         mapController.MapChange();
+
+        for (int i = 0; i < initialEnemyCount; i++)
+        {
+            enemyManager.SpawnEnemy();
+        }
 
         yield return new WaitForSeconds(1.0f);
         SetGameState(GameState.PlayerWait);

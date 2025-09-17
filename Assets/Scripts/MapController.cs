@@ -13,7 +13,7 @@ public class MapController : MonoBehaviour
     [SerializeField] StairsController stairs;
     [SerializeField] GameManager gameManager;
     [SerializeField] UIManager uIManager;
-    [SerializeField] EnemySpawnController enemySpawn;
+    [SerializeField] EnemyManager enemyManager;
 
 
     [SerializeField] GameObject[] stages;
@@ -69,7 +69,7 @@ public class MapController : MonoBehaviour
         return assignedLocation;
     }
 
-    public Vector3 Assign(GameObject enemy)
+    public void AssignEnemy(GameObject enemy)
     {
         Vector3 assignedLocation = Vector3.zero;
         bool canAssign = false;
@@ -90,6 +90,6 @@ public class MapController : MonoBehaviour
             */
 
         }
-        return assignedLocation;
+        enemy.transform.position = assignedLocation;
     }
 }
